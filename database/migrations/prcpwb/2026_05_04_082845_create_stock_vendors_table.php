@@ -12,15 +12,15 @@ return new class extends Migration
      */
 
     // sim_proc_poweb_part_stock_vendor
-    // Jensi Tabel: Master (MSH)
+    // Jensi Tabel: Master (TRH)
     protected $connection = 'prcpwb';
 
     public function up(): void
     {
-        DB::connection($this->connection)->statement('CREATE SEQUENCE "SQ_MSHSTOCKVENDORS_IID" START 1 INCREMENT 1');
+        DB::connection($this->connection)->statement('CREATE SEQUENCE "SQ_TRHSTOCKVENDORS_IID" START 1 INCREMENT 1');
      
-        Schema::connection($this->connection)->create('PRCPWB_MSHSTOCKVENDORS', function (Blueprint $table) {
-            $table->bigInteger('IID')->primary()->default(DB::raw('nextval(\'"SQ_MSHSTOCKVENDORS_IID"\')'));
+        Schema::connection($this->connection)->create('PRCPWB_TRHSTOCKVENDORS', function (Blueprint $table) {
+            $table->bigInteger('IID')->primary()->default(DB::raw('nextval(\'"SQ_TRHSTOCKVENDORS_IID"\')'));
             $table->string('VVENDORNO', 20);
             $table->string('VPARTNO', 60)->default('');
             $table->double('EQTYONHAND')->nullable();
@@ -43,7 +43,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::connection($this->connection)->dropIfExists('PRCPWB_MSHSTOCKVENDORS');
-        DB::connection($this->connection)->statement('DROP SEQUENCE IF EXISTS "SQ_MSHSTOCKVENDORS_IID"');
+        Schema::connection($this->connection)->dropIfExists('PRCPWB_TRHSTOCKVENDORS');
+        DB::connection($this->connection)->statement('DROP SEQUENCE IF EXISTS "SQ_TRHSTOCKVENDORS_IID"');
     }
 };

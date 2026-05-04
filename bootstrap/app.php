@@ -27,6 +27,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->middleware(['web'])
                 ->group(__DIR__ . '/../routes/web/FACTWM.php');
 
+            Route::prefix('PRCPWB')
+                ->middleware(['web'])
+                ->group(__DIR__ . '/../routes/web/PRCPWB.php');
+
             Route::prefix('HITUAM/web-api')
                 ->middleware(['web'])
                 ->group(__DIR__ . '/../routes/web-api/HITUAM.php');
@@ -35,11 +39,18 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->middleware(['web'])
                 ->group(__DIR__ . '/../routes/web-api/HITUAM.php');
 
+            Route::prefix('PRCPWB/web-api')
+                ->middleware(['web'])
+                ->group(__DIR__ . '/../routes/web-api/PRCPWB.php');
+
             Route::prefix('HITUAM/api')
                 ->group(__DIR__ . '/../routes/api/HITUAM.php');
 
             Route::prefix('FACTWM/api')
                 ->group(__DIR__ . '/../routes/api/FACTWM.php');
+
+            Route::prefix('PRCPWB/api')
+                ->group(__DIR__ . '/../routes/api/PRCPWB.php');
         },
 
     )
