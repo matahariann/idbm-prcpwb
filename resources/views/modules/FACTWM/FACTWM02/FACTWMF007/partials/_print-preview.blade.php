@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Billing Statement</title>
+    <style>
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 11px;
+        }
+
+        .header {
+            width: 100%;
+        }
+
+        .header td {
+            vertical-align: top;
+        }
+
+        .title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .info-table td {
+            padding: 2px 4px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .table th,
+        .table td {
+            border: 1px solid #000;
+            padding: 4px;
+        }
+
+        .table th {
+            background: #f0f0f0;
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .qr-center {
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+
+    {{-- halaman depan amplop --}}
+    <div style="page-break-after: always;">
+        <strong>PT Astemo Bekasi Manufacturing</strong><br><br>
+        <table class="header">
+            <tr>
+                <td width="20%" class="qr-center">
+                    <img src="data:image/png;base64,{{ base64_encode(
+                        QrCode::format('png')->size(90)->generate($verifyPo->VBILLING_STATEMENT ?? ''),
+                    ) }}"
+                        width="90">
+                    <div><strong>{{ $verifyPo->VBILLING_STATEMENT ?? '' }}</strong></div>
+                </td>
+
+                <td width="60%" class="title">
+                    BILLING STATEMENT<br><br>
+                </td>
+
+                <td width="20%" class="qr-center">
+                    <img src="data:image/png;base64,{{ base64_encode(
+                        QrCode::format('png')->size(90)->generate($verifyPo->VUNIQUE_CODE ?? ''),
+                    ) }}"
+                        width="90">
+                    <strong>{{ $verifyPo->VUNIQUE_CODE ?? '' }}</strong>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- HEADER -->
+    <strong>PT Astemo Bekasi Manufacturing</strong><br><br>
+    <table class="header">
+        <tr>
+            <td width="20%" class="qr-center">
+                <img src="data:image/png;base64,{{ base64_encode(
+                    QrCode::format('png')->size(90)->generate($verifyPo->VBILLING_STATEMENT ?? ''),
+                ) }}"
+                    width="90">
+                <div><strong>{{ $verifyPo->VBILLING_STATEMENT ?? '' }}</strong></div>
+            </td>
+
+            <td width="60%" class="title">
+                BILLING STATEMENT<br><br>
+            </td>
+
+            <td width="20%" class="qr-center">
+                <img src="data:image/png;base64,{{ base64_encode(
+                    QrCode::format('png')->size(90)->generate($verifyPo->VUNIQUE_CODE ?? ''),
+                ) }}"
+                    width="90">
+                <strong>{{ $verifyPo->VUNIQUE_CODE ?? '' }}</strong>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+
+    <!-- INFO -->
+    <table width="100%">
+        <tr>
+            <td width="50%">
+                <table class="info-table">
+                    <tr>
+                        <td>Billing Statement No</td>
+                        <td>:</td>
+                        <td>{{ $verifyPo->VBILLING_STATEMENT ?? '' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Supplier No</td>
+                        <td>:</td>
+                        <td>{{ $verifyPo->VSUPPLIER_CODE ?? '' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Supplier Name</td>
+                        <td>:</td>
+                        <td>{{ $verifyPo->supplier?->VNAME ?? '' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Currency</td>
+                        <td>:</td>
+                        <td>IDR</td>
+                    </tr>
+                </table>
+            </td>
+            <td width="50%">
+                <table class="info-table">
+                    <tr>
+                        <td>Supplier Invoice No</td>
+                        <td>:</td>
+                        <td>{{ $verifyPo->VINVOICE_NUMBER ?? '' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Supplier Invoice Date</td>
+                        <td>:</td>
+                        <td>{{ $verifyPo->DINVOICE_DATE ? \Carbon\Carbon::parse($verifyPo->DINVOICE_DATE)->format('Y-m-d') : '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Tax Invoice No</td>
+                        <td>:</td>
+                        <td>{{ $verifyPo->VTAX_INVOICE_NUMBER ?? '' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Tax Invoice Date</td>
+                        <td>:</td>
+                        <td>{{ $verifyPo->DTAX_INVOICE_DATE ? \Carbon\Carbon::parse($verifyPo->DTAX_INVOICE_DATE)->format('Y-m-d') : '' }}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <!-- TABLE -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Material Code</th>
+                <th>Description</th>
+                <th>Quantity</th>
+                <th>Uom</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (count($verifyPo->details) > 0)
+                @foreach ($verifyPo->details ?? [] as $key => $item)
+                    <tr>
+                        <td align="center">{{ $key + 1 }}</td>
+                        <td>{{ $item->gr_details?->VMATERIAL_CODE ?? '' }}</td>
+                        <td>{{ $item->gr_details?->VDESCRIPTION ?? '' }}</td>
+                        <td align="center">{{ $item->gr_details?->IQTY ?? '' }}</td>
+                        <td align="center">{{ $item->gr_details?->UOM ?? '' }}</td>
+                        <td class="text-right">{{ number_format($item->gr_details?->VAMOUNT ?? '', 0, ',', '.') }}</td>
+                    </tr>
+                @endforeach
+                <tr>
+                    <td colspan="5" width="80%" class="text-right">Purchase Net Amount</td>
+                    <td width="20%" class="text-right">
+                        {{ number_format((int) $verifyPo->INET_AMOUNT ?? '', 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td colspan="5" class="text-right">Purchase PPN (12%)</td>
+                    <td class="text-right">
+                        {{ number_format((int) $verifyPo->IPPN ?? '', 0, ',', '.') }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5" class="text-right"><strong>Purchase Gross Amount</strong></td>
+                    <td class="text-right">
+                        <strong>{{ number_format((int) $verifyPo->ITOTAL ?? '', 0, ',', '.') }}</strong>
+                    </td>
+                </tr>
+            @endif
+        </tbody>
+    </table>
+
+    <br>
+
+    {{-- <!-- TOTAL -->
+    <table class="table" width="100%">
+        <tr>
+            <td width="80%" class="text-right">Purchase Nett Amount</td>
+            <td width="20%" class="text-right">199,443,680</td>
+        </tr>
+        <tr>
+            <td class="text-right">Purchase PPN (11%)</td>
+            <td class="text-right">21,938,805</td>
+        </tr>
+        <tr>
+            <td class="text-right"><strong>Purchase Gross Amount</strong></td>
+            <td class="text-right"><strong>221,382,485</strong></td>
+        </tr>
+    </table> --}}
+
+</body>
+
+</html>
