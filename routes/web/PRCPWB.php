@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'bd', 'middleware' => 'auth'], function () {
     Route::group(['prefix' => 'configuration', 'controller' => PRCPWBF001::class], function () {
         Route::get('/', 'index');
+        Route::post('/', 'store');
+        Route::get('/{configuration}', 'show');
+        Route::put('/{configuration}', 'update');
+        Route::delete('/{configuration}', 'destroy');
     });
 });
 
