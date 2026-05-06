@@ -1,6 +1,6 @@
 @extends('layouts/layoutMaster')
 
-@section('title', 'PRCPWB - Transaction Daily Request')
+@section('title', 'PRCPWB - Transaction Inbox PO')
 
 @section('content')
 <nav aria-label="breadcrumb">
@@ -11,11 +11,11 @@
         <li class="breadcrumb-item">
             <a href="javascript:void(0);">Transaction</a>
         </li>
-        <li class="breadcrumb-item active">Daily Request</li>
+        <li class="breadcrumb-item active">Inbox PO</li>
     </ol>
 </nav>
 
 <div class="card">
-  <h1>Daily Request</h1>
+  <h1>Inbox PO</h1>
 </div>
 @endsection

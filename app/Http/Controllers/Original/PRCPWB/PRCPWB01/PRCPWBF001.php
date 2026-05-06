@@ -10,6 +10,7 @@ use App\Models\PRCPWB01\PRCPWB_MSHCONFIGURATION as Configuration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+// Configuration
 class PRCPWBF001 extends Controller
 {
     public function index(PRCPWBF001DataTable $dataTable)

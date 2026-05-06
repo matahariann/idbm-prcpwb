@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Original\PRCPWB\PRCPWB02;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+// Daily Request
 class PRCPWBF005 extends Controller
 {
     public function index()

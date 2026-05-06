@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataTables\Original\PCRPWB02;
+namespace App\DataTables\Original\PRCPWB02;
 
 use App\Models\PRCPWBF006;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
@@ -12,6 +12,8 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
+
+// Stock Vendor
 class PRCPWBF006DataTable extends DataTable
 {
     /**

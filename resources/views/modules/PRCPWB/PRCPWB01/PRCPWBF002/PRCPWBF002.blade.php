@@ -1,6 +1,6 @@
 @extends('layouts/layoutMaster')
 
-@section('title', 'PRCPWB - Inbox Forecast')
+@section('title', 'PRCPWB - Master Data Vendor')
 
 @section('page-style')
     @vite(['resources/assets/vendor/libs/select2/select2.scss'])
@@ -13,13 +13,13 @@
             <a href="javascript:void(0);">PO Web</a>
         </li>
         <li class="breadcrumb-item">
-            <a href="javascript:void(0);">Transaction</a>
+            <a href="javascript:void(0);">Master Data</a>
         </li>
-        <li class="breadcrumb-item active">Inbox Forecast</li>
+        <li class="breadcrumb-item active">Vendor</li>
     </ol>
 </nav>
 
-    <div class="card">
+<div class="card">
         <div class="card-datatable">
             <div class="d-flex justify-content-end align-items-center my-5 flex-column flex-xl-row px-6">
                 <div class="d-flex gap-2 align-items-center flex-column flex-lg-row mt-2 mt-xxl-0">
@@ -50,5 +50,5 @@
 
 @section('page-script')
     {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
-    @vite(['resources/js/pages/prcpwb/prcpwb02/forecast/forecast.js'])
+    @vite(['resources/js/pages/prcpwb/prcpwb01/vendor/vendor.js'])
 @endsection

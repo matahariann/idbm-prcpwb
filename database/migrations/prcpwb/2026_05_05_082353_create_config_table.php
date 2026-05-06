@@ -10,6 +10,10 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+
+    // Jenis Tabel: Master (MSH)
+    protected $connection = 'prcpwb';
+
     public function up(): void
     {
         DB::statement('CREATE SEQUENCE IF NOT EXISTS "SQ_MSHCONFIGURATIONS_IID" START 1 INCREMENT 1');

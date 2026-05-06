@@ -2,14 +2,16 @@
 
 use App\Models\HITUAM01\HITUAM_MSHUSER as User;
 use App\Http\Controllers\Original\PRCPWB\PRCPWB01\PRCPWBF001;
-use App\Http\Controllers\Original\PRCPWB\PRCPWB02\PRCPWBF002;
+use App\Http\Controllers\Original\PRCPWB\PRCPWB01\PRCPWBF002;
 use App\Http\Controllers\Original\PRCPWB\PRCPWB02\PRCPWBF003;
 use App\Http\Controllers\Original\PRCPWB\PRCPWB02\PRCPWBF004;
 use App\Http\Controllers\Original\PRCPWB\PRCPWB02\PRCPWBF005;
 use App\Http\Controllers\Original\PRCPWB\PRCPWB02\PRCPWBF006;
+use App\Http\Controllers\Original\PRCPWB\PRCPWB02\PRCPWBF007;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'bd', 'middleware' => 'auth'], function () {
+    // Configuration
     Route::group(['prefix' => 'configuration', 'controller' => PRCPWBF001::class], function () {
         Route::get('/', 'index');
         Route::post('/', 'store');
@@ -17,26 +19,37 @@ Route::group(['prefix' => 'bd', 'middleware' => 'auth'], function () {
         Route::put('/{configuration}', 'update');
         Route::delete('/{configuration}', 'destroy');
     });
+
+    // Master Vendor
+    Route::group(['prefix' => 'master-vendor', 'controller' => PRCPWBF002::class], function () {
+        Route::get('/', 'index');
+    });
 });
 
 Route::group(['prefix' => 'ts', 'middleware' => 'auth'], function () {
-    Route::group(['prefix' => 'inbox-forecast', 'controller' => PRCPWBF002::class], function () {
+    // Inbox Forecast
+    Route::group(['prefix' => 'inbox-forecast', 'controller' => PRCPWBF003::class], function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'detail')->name('forecast.detail');
+    });
+
+    // Inbox PO
+    Route::group(['prefix' => 'inbox-po', 'controller' => PRCPWBF004::class], function () {
         Route::get('/', 'index');
     });
 
-    Route::group(['prefix' => 'inbox-po', 'controller' => PRCPWBF003::class], function () {
+    // Daily Request
+    Route::group(['prefix' => 'daily-request', 'controller' => PRCPWBF005::class], function () {
         Route::get('/', 'index');
     });
 
-    Route::group(['prefix' => 'daily-request', 'controller' => PRCPWBF004::class], function () {
+    // Stock
+    Route::group(['prefix' => 'data-stock', 'controller' => PRCPWBF006::class], function () {
         Route::get('/', 'index');
     });
 
-    Route::group(['prefix' => 'data-stock', 'controller' => PRCPWBF005::class], function () {
-        Route::get('/', 'index');
-    });
-
-    Route::group(['prefix' => 'generate-qr', 'controller' => PRCPWBF006::class], function () {
+    // Generate QR
+    Route::group(['prefix' => 'generate-qr', 'controller' => PRCPWBF007::class], function () {
         Route::get('/', 'index');
     });
 });

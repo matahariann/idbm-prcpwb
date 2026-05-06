@@ -1,8 +1,8 @@
 <?php
 
-namespace App\DataTables\Original\PCRPWB02;
+namespace App\DataTables\Original\PRCPWB02;
 
-use App\Models\PRCPWBF002;
+use App\Models\PRCPWBF007;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -12,26 +12,27 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
-class PRCPWBF002DataTable extends DataTable
+// Generate QR
+class PRCPWBF007DataTable extends DataTable
 {
     /**
      * Build the DataTable class.
      *
-     * @param QueryBuilder<PRCPWBF002> $query Results from query() method.
+     * @param QueryBuilder<PRCPWBF007> $query Results from query() method.
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', 'prcpwbf002.action')
+            ->addColumn('action', 'prcpwbf007.action')
             ->setRowId('id');
     }
 
     /**
      * Get the query source of dataTable.
      *
-     * @return QueryBuilder<PRCPWBF002>
+     * @return QueryBuilder<PRCPWBF007>
      */
-    public function query(PRCPWBF002 $model): QueryBuilder
+    public function query(PRCPWBF007 $model): QueryBuilder
     {
         return $model->newQuery();
     }
@@ -42,7 +43,7 @@ class PRCPWBF002DataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('prcpwbf002-table')
+                    ->setTableId('prcpwbf007-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->orderBy(1)
@@ -80,6 +81,6 @@ class PRCPWBF002DataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'PRCPWBF002_' . date('YmdHis');
+        return 'PRCPWBF007_' . date('YmdHis');
     }
 }
