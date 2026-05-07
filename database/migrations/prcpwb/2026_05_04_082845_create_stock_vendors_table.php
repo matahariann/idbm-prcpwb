@@ -17,7 +17,8 @@ return new class extends Migration
 
     public function up(): void
     {
-        DB::connection($this->connection)->statement('CREATE SEQUENCE "SQ_TRHSTOCKVENDORS_IID" START 1 INCREMENT 1');
+        DB::connection($this->connection)->statement('CREATE SEQUENCE IF NOT EXISTS "SQ_TRHSTOCKVENDORS_IID" START 1 INCREMENT 1');
+        DB::connection($this->connection)->statement('ALTER SEQUENCE "SQ_TRHSTOCKVENDORS_IID" RESTART WITH 1');
      
         Schema::connection($this->connection)->create('PRCPWB_TRHSTOCKVENDORS', function (Blueprint $table) {
             $table->bigInteger('IID')->primary()->default(DB::raw('nextval(\'"SQ_TRHSTOCKVENDORS_IID"\')'));
@@ -34,7 +35,7 @@ return new class extends Migration
             $table->string('VDELETE', 100)->nullable();
             $table->timestamp('DDELETE')->nullable();
 
-            $table->unique(['VVENDORNO', 'VPARTNO']);
+            $table->unique(['IID', 'VVENDORNO', 'VPARTNO']);
         });
     }
 

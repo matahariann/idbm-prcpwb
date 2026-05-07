@@ -73,6 +73,12 @@ class PRCPWBF001DataTable extends DataTable
             ->parameters([
                 'processing' => false,
                 'orderCellsTop' => true,
+                'columnDefs' => [
+                    [
+                        'className' => 'text-start text-nowrap',
+                        'targets' => '_all' // apply to all columns
+                    ]
+                ],
                 'buttons' => [
                     [
                         'extend' => 'excel',

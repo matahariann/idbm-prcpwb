@@ -62,6 +62,20 @@ return [
             ]) : [],
         ],
 
+        'mysql_legacy' => [
+            'driver' => 'mysql',
+            'host' => env('DB_OLD_HOST', '127.0.0.1'),
+            'port' => env('DB_OLD_PORT', '3306'),
+            'database' => env('DB_OLD_DATABASE', 'forge'),
+            'username' => env('DB_OLD_USERNAME', 'forge'),
+            'password' => env('DB_OLD_PASSWORD', ''),
+            'charset' => 'latin1', // Sesuaikan dengan dump MySQL anda tadi
+            'collation' => 'latin1_swedish_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => 'MyISAM',
+        ],
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),

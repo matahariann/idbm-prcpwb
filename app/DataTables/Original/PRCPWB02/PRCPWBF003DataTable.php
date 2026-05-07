@@ -28,17 +28,17 @@ class PRCPWBF003DataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addIndexColumn() // Untuk kolom 'No'
             ->addColumn('register_no', function ($row) {
-            $period = trim($row->VPERIOD); 
-            $revNo = str_pad($row->IREVNO, 2, '0', STR_PAD_LEFT);
-            $vendorNoShort = substr(trim($row->VVENDORNO), 1, 5);
-            $destination = $row->VDESTINATIONID;
+                $period = trim($row->VPERIOD); 
+                $revNo = str_pad($row->IREVNO, 2, '0', STR_PAD_LEFT);
+                $vendorNoShort = substr(trim($row->VVENDORNO), 1, 5);
+                $destination = $row->VDESTINATIONID;
 
-            $registerNo = "{$period}-{$revNo}-{$vendorNoShort}-{$destination}";
-            $url = route('forecast.detail', ['id' => $row->IID]);
-            return '<a href="' . $url . '" class="text-primary text-decoration-underline">' . $registerNo . '</a>';
-        })
+                $registerNo = "{$period}-{$revNo}-{$vendorNoShort}-{$destination}";
+                $url = route('forecast.detail', ['id' => $row->IID]);
+                return '<a href="' . $url . '" class="text-primary text-decoration-underline">' . $registerNo . '</a>';
+            })
             ->editColumn('DRELEASEDATE', function ($data) {
-              return Carbon::parse($data->DRELEASEDATE)->format('d M Y H:i');
+                return Carbon::parse($data->DRELEASEDATE)->format('d M Y H:i');
             })
             ->editColumn('DCREA', function ($data) {
                 return Carbon::parse($data->DCREA)->format('d M Y H:i');
@@ -115,6 +115,12 @@ class PRCPWBF003DataTable extends DataTable
             ->parameters([
                 'processing' => false,
                 'orderCellsTop' => true,
+                'columnDefs' => [
+                    [
+                        'className' => 'text-start text-nowrap',
+                        'targets' => '_all' // apply to all columns
+                    ]
+                ],
                 'buttons' => [
                     [
                         'extend' => 'excel',

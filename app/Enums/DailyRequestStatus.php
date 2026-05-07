@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum DailyRequesStatus: string
+enum DailyRequestStatus: string
 {
     case CREATED = 'Created';
     case PRINTED = 'Printed';

@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 
 class Vendor {
     #vendorTable = $('#prcpwbf002-table');
+    #keyword = '';
 
     init() {
         const self = this;
@@ -16,49 +17,30 @@ class Vendor {
             }
         });
 
+        this.#vendorTable.on('preXhr.dt', function(e, settings, data) {
+            if (self.#keyword) {
+                data['keyword'] = self.#keyword;
+            }
+        });
+
         this.#filterEvents();
-        this.#events();
     }
 
     #filterEvents() {
-        // Handle perubahan jumlah entries (10, 25, 50, dsb)
         $(document).on('change', '#entries', e => {
             const perPage = $(e.target).val();
             const table = this.#vendorTable.DataTable();
             table.page.len(perPage).draw();
         });
 
-        // Handle Search Input dengan Debounce 500ms
         let searchTimeout;
         $(document).on('keyup', '#search-input', e => {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {
-                const keyword = $(e.target).val();
-                this.#updateQuery({ keyword });
+                this.#keyword = $(e.target).val();
+                this.#vendorTable.DataTable().ajax.reload();
             }, 500);
         });
-    }
-
-    #updateQuery(params) {
-        const table = this.#vendorTable.DataTable();
-        const currentUrl = new URL(window.location.href);
-        const searchParams = new URLSearchParams(currentUrl.search);
-
-        // Update atau hapus parameter pencarian di URL
-        for (const key in params) {
-            if (params[key] === '' || params[key] === null || params[key] === undefined) {
-                searchParams.delete(key);
-            } else {
-                searchParams.set(key, params[key]);
-            }
-        }
-
-        // Reset ke halaman 1 setiap kali mencari
-        searchParams.set('page', 1);
-
-        // Update URL AJAX DataTable dan reload
-        const newUrl = `${currentUrl.pathname}?${searchParams.toString()}`;
-        table.ajax.url(newUrl).load();
     }
 }
 

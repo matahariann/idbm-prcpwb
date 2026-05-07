@@ -17,7 +17,8 @@ return new class extends Migration
 
     public function up(): void
     {
-        DB::connection($this->connection)->statement('CREATE SEQUENCE "SQ_MSHVENDORS_IID" START 1 INCREMENT 1');
+        DB::connection($this->connection)->statement('CREATE SEQUENCE IF NOT EXISTS "SQ_MSHVENDORS_IID" START 1 INCREMENT 1');
+        DB::connection($this->connection)->statement('ALTER SEQUENCE "SQ_MSHVENDORS_IID" RESTART WITH 1');
 
         Schema::connection($this->connection)->create('PRCPWB_MSHVENDORS', function (Blueprint $table) {
             $table->bigInteger('IID')->primary()->default(DB::raw('nextval(\'"SQ_MSHVENDORS_IID"\')'));

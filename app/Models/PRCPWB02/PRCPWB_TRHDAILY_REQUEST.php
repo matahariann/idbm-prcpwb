@@ -49,7 +49,6 @@ class PRCPWB_TRHDAILY_REQUEST extends BaseModel
 
     protected $casts = [
         'VSTATUS' => \App\Enums\DailyRequestStatus::class,
-        'VTIME' => 'time',
         'DWANTEDRECEIPTDATE' => 'date',
         'DPROPOSEDWANTEDRECEIPTDATE' => 'date',
         'DCREA' => 'datetime',

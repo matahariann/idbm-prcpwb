@@ -26,6 +26,9 @@ class PRCPWBF002DataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addIndexColumn()
+            ->editColumn('VIMPORT', function ($data) {
+                return $data->VIMPORT?->name;
+            })
             ->editColumn('DCREA', function ($data) {
                 return Carbon::parse($data->DCREA)->format('d M Y H:i');
             })
@@ -73,6 +76,12 @@ class PRCPWBF002DataTable extends DataTable
             ->parameters([
                 'processing' => false,
                 'orderCellsTop' => true,
+                'columnDefs' => [
+                    [
+                        'className' => 'text-start text-nowrap',
+                        'targets' => '_all' // apply to all columns
+                    ]
+                ],
                 'buttons' => [
                     [
                         'extend' => 'excel',
@@ -117,7 +126,7 @@ class PRCPWBF002DataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('DT_RowIndex')->title('No')->searchable(false)->orderable(false)->width(30),
+            Column::make('DT_RowIndex')->title('No')->searchable(false)->orderable(false),
             Column::make('VVENDORNO')->title('Vendor ID'),
             Column::make('VVENDORNAME')->title('Vendor Name'),
             Column::make('VCONTACT')->title('Contact'),

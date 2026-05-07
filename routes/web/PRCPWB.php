@@ -36,6 +36,7 @@ Route::group(['prefix' => 'ts', 'middleware' => 'auth'], function () {
     // Inbox PO
     Route::group(['prefix' => 'inbox-po', 'controller' => PRCPWBF004::class], function () {
         Route::get('/', 'index');
+        Route::get('/{id}', 'detail')->name('po.detail');
     });
 
     // Daily Request

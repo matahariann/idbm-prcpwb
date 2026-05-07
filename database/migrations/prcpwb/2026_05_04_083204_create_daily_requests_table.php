@@ -17,7 +17,8 @@ return new class extends Migration
 
     public function up(): void
     {
-        DB::connection($this->connection)->statement('CREATE SEQUENCE "SQ_TRHDAILYREQUESTS_IID" START 1 INCREMENT 1');
+        DB::connection($this->connection)->statement('CREATE SEQUENCE IF NOT EXISTS "SQ_TRHDAILYREQUESTS_IID" START 1 INCREMENT 1');
+        DB::connection($this->connection)->statement('ALTER SEQUENCE "SQ_TRHDAILYREQUESTS_IID" RESTART WITH 1');
 
         Schema::connection($this->connection)->create('PRCPWB_TRHDAILYREQUESTS', function (Blueprint $table) {
             $table->bigInteger('IID')->primary()->default(DB::raw('nextval(\'"SQ_TRHDAILYREQUESTS_IID"\')'));
@@ -50,7 +51,7 @@ return new class extends Migration
             $table->string('VDELETE', 200)->nullable();
             $table->timestamp('DDELETE')->nullable();
 
-            $table->unique(['VVENDORNO', 'VPARTNO', 'DWANTEDRECEIPTDATE', 'DPROPOSEDWANTEDRECEIPTDATE', 'VTIME', 'IREVNO', 'VFORECAST', 'IMSPERIOD', 'IMSYEAR']);
+            $table->unique(['IID', 'VVENDORNO', 'VPARTNO', 'DWANTEDRECEIPTDATE', 'DPROPOSEDWANTEDRECEIPTDATE', 'VTIME', 'IREVNO', 'VFORECAST', 'IMSPERIOD', 'IMSYEAR']);
             $table->index('VDAILYREQNO');
             $table->index(['VVENDORNO', 'VPARTNO', 'DWANTEDRECEIPTDATE', 'VSTATUS']);
         });

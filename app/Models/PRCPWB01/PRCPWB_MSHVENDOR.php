@@ -32,7 +32,7 @@ class PRCPWB_MSHVENDOR extends Model
     ];
 
     protected $casts = [
-        'VIMPORT' => 'boolean',
+        'VIMPORT' => \App\Enums\VendorImportStatus::class,
         'DCREA'  => 'datetime',
         'DMODI'  => 'datetime',
         'DDELETE' => 'datetime',
