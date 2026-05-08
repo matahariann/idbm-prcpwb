@@ -84,6 +84,7 @@ class PRCPWBF006DataTable extends DataTable
                         'extend' => 'excel',
                         'className' => 'd-none',
                         'filename' => $this->filename(),
+                        'title' => 'PRCPWB - Transaction Data Stock | IDBM - PO Web',
                         'exportOptions' => [
                             'columns' => ':visible:not(:first-child):not(:last-child)',
                         ],

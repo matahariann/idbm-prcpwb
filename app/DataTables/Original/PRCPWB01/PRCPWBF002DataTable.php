@@ -25,7 +25,14 @@ class PRCPWBF002DataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addIndexColumn()
+            ->addColumn('checkbox', function ($row) {
+                return '
+                    <div class="d-flex gap-2 align-items-center">
+                        <input type="checkbox" class="form-check-input" name="selected[]" value="' . $row->IID . '">
+                    </div>
+                ';
+            })
+            ->addColumn('action', fn($data) => $this->getActionButton($data))
             ->editColumn('VIMPORT', function ($data) {
                 return $data->VIMPORT?->name;
             })
@@ -38,6 +45,7 @@ class PRCPWBF002DataTable extends DataTable
                     : null;
             })
             ->setRowId('IID')
+            ->rawColumns(['checkbox', 'action'])
 
             ->filterColumn('DCREA', function ($query, $keyword) {
                 $this->applyDateRangeFilter($query, 'DCREA', $keyword);
@@ -103,17 +111,32 @@ class PRCPWBF002DataTable extends DataTable
                     "<'d-flex align-items-center justify-content-center justify-content-lg-between flex-wrap gap-2 text-center px-6 mt-6'ip>",
                 'drawCallback' => '
                     function() {
-                        $("#select-all-service").off("click").on("click", function(){
+                        $("#select-all").off("click").on("click", function(){
                             var checked = this.checked;
-                            $("input[name=\'selected-service[]\']").prop("checked", checked).trigger("change");
+                            $("input[name=\'selected[]\']").prop("checked", checked).trigger("change");
                         });
 
-                        $("input[name=\'selected-service[]\']").off("change").on("change", function(){
-                            var anyChecked = $("input[name=\'selected-service[]\']:checked").length > 0;
-                            $("#btn-delete-selected").toggleClass("d-none", !anyChecked);
+                        $("input[name=\'selected[]\']").off("change").on("change", function(){
+                            var checkedCount = $("input[name=\'selected[]\']:checked").length;
 
-                            var allChecked = $("input[name=\'selected-service[]\']").length === $("input[name=\'selected-service[]\']:checked").length;
-                            $("#select-all-service").prop("checked", allChecked);
+                            // Jika tepat 1 data dipilih, enable kedua tombol
+                            if (checkedCount === 1) {
+                                $("#btn-delete-selected").removeClass("disabled");
+                                $("#btn-eksport").removeClass("disabled");
+                            }
+                            // Jika tidak ada yang dipilih, disable kedua tombol
+                            else if (checkedCount === 0) {
+                                $("#btn-delete-selected").addClass("disabled");
+                                $("#btn-eksport").addClass("disabled");
+                            }
+                            // Jika lebih dari 1 dipilih, disable btn-delete-selected tapi enable btn-eksport
+                            else {
+                                $("#btn-delete-selected").addClass("disabled");
+                                $("#btn-eksport").removeClass("disabled");
+                            }
+
+                            var allChecked = $("input[name=\'selected[]\']").length === checkedCount;
+                            $("#select-all").prop("checked", allChecked);
                         });
                     }
                 ',
@@ -126,8 +149,14 @@ class PRCPWBF002DataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('DT_RowIndex')->title('No')->searchable(false)->orderable(false),
-            Column::make('VVENDORNO')->title('Vendor ID'),
+            Column::computed('checkbox')
+                ->title('<input type="checkbox" class="form-check-input" id="select-all">')
+                ->exportable(false)
+                ->printable(false)
+                ->orderable(false)
+                ->searchable(false)
+                ->width(30)
+                ->addClass('text-center'),
             Column::make('VVENDORNAME')->title('Vendor Name'),
             Column::make('VCONTACT')->title('Contact'),
             Column::make('VADDRESS')->title('Address'),            
@@ -142,5 +171,25 @@ class PRCPWBF002DataTable extends DataTable
     protected function filename(): string
     {
         return 'PRCPWBF002_' . date('YmdHis');
+    }
+
+    private function getActionButton($data): string
+    {
+        $buttons = [
+            [
+                'action' => 'edit',
+                'service' => 'PRCPWBF002-Update',
+                'icon' => 'pencil',
+                'class' => 'edit-menu',
+            ],
+            [
+                'action' => 'delete',
+                'service' => 'PRCPWBF002-Delete',
+                'icon' => 'trash',
+                'class' => 'delete-menu',
+            ],
+        ];
+
+        return $this->actionButtons($data, $buttons);
     }
 }

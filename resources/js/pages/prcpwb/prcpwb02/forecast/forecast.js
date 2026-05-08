@@ -5,6 +5,16 @@ import Swal from 'sweetalert2';
 class Forecast {
     #forecastTable = $('#prcpwbf003-table');
 
+    #columnIndexMap = {
+        'register_no'   : 1,
+        'VVENDORNO'     : 2,
+        'VVENDORNAME'   : 3,
+        'VDESTINATIONID': 4,
+        'VSTATUS'       : 5,
+        'DRELEASEDATE'  : 6,
+        'DCONFIRMDATE'  : 8,
+    };
+
     init() {
         const self = this;
 
@@ -48,6 +58,37 @@ class Forecast {
                 this.#updateQuery({ keyword });
             }, 500);
         });
+
+        // Sort by column
+        $(document).on('change', '#sort-column', () => {
+            this.#applySort();
+        });
+
+        // Sort direction
+        $(document).on('change', '#sort-direction', () => {
+            if ($('#sort-column').val()) {
+                this.#applySort();
+            }
+        });
+    }
+
+    #applySort() {
+        const column = $('#sort-column').val();
+        const direction = $('#sort-direction').val();
+        const table = this.#forecastTable.DataTable();
+
+        console.log('sort column:', column, 'index:', this.#columnIndexMap[column]); // debug
+
+        if (!column) {
+            // Reset sorting jika kolom dikosongkan
+            table.order([]).draw();
+            return;
+        }
+
+        const colIndex = this.#columnIndexMap[column];
+        if (colIndex !== undefined) {
+            table.order([colIndex, direction]).draw();
+        }
     }
 
     #updateQuery(params) {

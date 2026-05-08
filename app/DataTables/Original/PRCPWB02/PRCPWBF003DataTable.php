@@ -38,7 +38,9 @@ class PRCPWBF003DataTable extends DataTable
                 return '<a href="' . $url . '" class="text-primary text-decoration-underline">' . $registerNo . '</a>';
             })
             ->editColumn('DRELEASEDATE', function ($data) {
-                return Carbon::parse($data->DRELEASEDATE)->format('d M Y H:i');
+                return $data->DRELEASEDATE
+                    ? Carbon::parse($data->DRELEASEDATE)->format('d M Y H:i')
+                    : null;
             })
             ->editColumn('DCREA', function ($data) {
                 return Carbon::parse($data->DCREA)->format('d M Y H:i');
@@ -85,6 +87,22 @@ class PRCPWBF003DataTable extends DataTable
                         $q->orWhereRaw("({$sqlRegister}) ILIKE ?", ["%{$keyword}%"]);
                     });
                 }
+            })
+
+            ->orderColumn('register_no', function ($query, $order) {
+                $order = strtolower($order) === 'desc' ? 'DESC' : 'ASC';
+                $query->orderByRaw('
+                    "PRCPWB_TRHFORECASTS"."VPERIOD" || \'-\' || 
+                    LPAD(CAST("PRCPWB_TRHFORECASTS"."IREVNO" AS TEXT), 2, \'0\') || \'-\' || 
+                    SUBSTRING("PRCPWB_TRHFORECASTS"."VVENDORNO" FROM 2 FOR 5) || \'-\' || 
+                    "PRCPWB_TRHFORECASTS"."VDESTINATIONID" ' . $order
+                );
+            })
+            ->orderColumn('DRELEASEDATE', function ($query, $order) {
+                $query->orderBy('DRELEASEDATE', $order);
+            })
+            ->orderColumn('DCONFIRMDATE', function ($query, $order) {
+                $query->orderBy('DCONFIRMDATE', $order);
             });
     }
 
@@ -166,7 +184,7 @@ class PRCPWBF003DataTable extends DataTable
     {
         return [
             Column::make('DT_RowIndex')->title('No')->searchable(false)->orderable(false)->width(30),
-            Column::computed('register_no')->title('Register No')->searchable(true),
+            Column::computed('register_no')->title('Register No')->searchable(true)->orderable(true),
             Column::make('VVENDORNO')->title('Vendor ID'),
             Column::make('VVENDORNAME')->title('Vendor Name'),
             Column::make('VDESTINATIONID')->title('Destination'),

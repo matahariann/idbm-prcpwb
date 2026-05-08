@@ -5,6 +5,25 @@ import Swal from 'sweetalert2';
 class DailyRequest {
     #dailyRequestTable = $('#prcpwbf005-table');
 
+    #columnIndexMap = {
+    'VVENDORNO'             : 1,
+    'VVENDORNAME'           : 2,
+    'DWANTEDRECEIPTDATE'    : 3,
+    'VTIME'                 : 4,
+    'VPARTNO'               : 5,
+    'VPARTDESCRIPTION'      : 6,
+    'IQUANTITY'             : 9,  
+    'IQUANTITYCONFIRMATION' : 10, 
+    'IQUANTITYACTUAL'       : 11, 
+    'VSTATUS'               : 12, 
+    'VPONO'                 : 13, 
+    'VDAILYREQNO'           : 14, 
+    'VDELIVERYNOTENO'       : 15, 
+    'VPRODUCTFAMILY'        : 16, 
+    'DMODI'                 : 17, 
+};
+
+
     init() {
         const self = this;
 
@@ -45,6 +64,37 @@ class DailyRequest {
                 this.#updateQuery({ keyword });
             }, 500);
         });
+
+        // Sort by column
+        $(document).on('change', '#sort-column', () => {
+            this.#applySort();
+        });
+
+        // Sort direction
+        $(document).on('change', '#sort-direction', () => {
+            if ($('#sort-column').val()) {
+                this.#applySort();
+            }
+        });
+    }
+
+    #applySort() {
+        const column = $('#sort-column').val();
+        const direction = $('#sort-direction').val();
+        const table = this.#dailyRequestTable.DataTable();
+
+        console.log('sort column:', column, 'index:', this.#columnIndexMap[column]); // debug
+
+        if (!column) {
+            // Reset sorting jika kolom dikosongkan
+            table.order([]).draw();
+            return;
+        }
+
+        const colIndex = this.#columnIndexMap[column];
+        if (colIndex !== undefined) {
+            table.order([colIndex, direction]).draw();
+        }
     }
 
     #updateQuery(params) {

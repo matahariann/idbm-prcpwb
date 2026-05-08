@@ -5,6 +5,15 @@ import Swal from 'sweetalert2';
 class PurchaseOrder {
     #poTable = $('#prcpwbf004-table');
 
+    #columnIndexMap = {
+        'VORDERNO'      : 1,
+        'VVENDORNO'     : 2,
+        'VVENDORNAME'   : 3,
+        'VSTATUS'       : 4,
+        'DRELEASEDATE'  : 5,
+        'DCONFIRMDATE'  : 7,
+    };
+
     init() {
         const self = this;
 
@@ -48,6 +57,37 @@ class PurchaseOrder {
                 this.#updateQuery({ keyword });
             }, 500);
         });
+
+        // Sort by column
+        $(document).on('change', '#sort-column', () => {
+            this.#applySort();
+        });
+
+        // Sort direction
+        $(document).on('change', '#sort-direction', () => {
+            if ($('#sort-column').val()) {
+                this.#applySort();
+            }
+        });
+    }
+
+    #applySort() {
+        const column = $('#sort-column').val();
+        const direction = $('#sort-direction').val();
+        const table = this.#poTable.DataTable();
+
+        console.log('sort column:', column, 'index:', this.#columnIndexMap[column]); // debug
+
+        if (!column) {
+            // Reset sorting jika kolom dikosongkan
+            table.order([]).draw();
+            return;
+        }
+
+        const colIndex = this.#columnIndexMap[column];
+        if (colIndex !== undefined) {
+            table.order([colIndex, direction]).draw();
+        }
     }
 
     #updateQuery(params) {

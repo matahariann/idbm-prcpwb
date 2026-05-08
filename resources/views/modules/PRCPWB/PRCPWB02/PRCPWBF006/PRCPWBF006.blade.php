@@ -26,7 +26,11 @@
                     <div class="d-flex gap-2">
                         <button type="button" class="btn btn-primary d-flex align-items-center gap-2 py-2 px-3"
                             id="export-excel">
-                            <i class="icon-base ti tabler-upload"></i> Export
+                            <i class="icon-base ti tabler-file-type-xls"></i> Export Excel
+                        </button>
+                        <button type="button" class="btn btn-primary d-flex align-items-center gap-2 py-2 px-3"
+                            id="export-pdf">
+                            <i class="icon-base ti tabler-file-type-pdf"></i> Export PDF
                         </button>
                     </div>
                 </div>
@@ -57,6 +61,10 @@
 @endsection
 
 @section('page-script')
+    {{-- jsPDF + autoTable untuk export PDF custom --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
     {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
     @vite(['resources/js/pages/prcpwb/prcpwb02/stock/stock.js'])
 @endsection

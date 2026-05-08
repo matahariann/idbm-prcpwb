@@ -19,41 +19,75 @@
     </ol>
 </nav>
 
-    <div class="card">
-        <div class="card-datatable">
-            <div class="d-flex justify-content-between align-items-center my-5 flex-column flex-xl-row px-6">
-                <div class="d-flex align-items-center gap-2 justify-content-center">
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-primary d-flex align-items-center gap-2 py-2 px-3"
+<div class="card">
+    <div class="card-datatable">
+        <div class="d-flex flex-column flex-xl-row justify-content-between align-items-center my-5 px-6 gap-4">
+            
+            <!-- Sorting & Export-->
+            <div class="d-flex align-items-center gap-3 flex-column flex-md-row w-50 w-xl-auto justify-content-end">
+                <!-- Export-->
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-primary d-flex align-items-center gap-2 py-2 px-3"
                             id="export-excel">
-                            <i class="icon-base ti tabler-upload"></i> Export
-                        </button>
-                    </div>
+                        <i class="icon-base ti tabler-file-type-xls"></i> Export
+                    </button>
                 </div>
-                <div class="d-flex gap-2 align-items-center flex-column flex-lg-row mt-2 mt-xxl-0">
-                    <div class="d-flex align-items-center gap-1 justify-content-center">
-                        <select class="form-select form-select-sm mx-2" id="entries"
-                            style="width: 70px; max-width: 70px; font-size: 1rem; padding: 0.25rem 0.5rem;">
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                            <option value="-1">All</option>
-                        </select>
-                    </div>
-                    <div class="input-group" style="width: 100%; min-width: 200px;">
-                        <span class="input-group-text border-end-0">
-                            <i class="icon-base ti tabler-search"></i>
-                        </span>
-                        <input type="text" class="form-control border-start-0" placeholder="Search"
-                            aria-label="Search Shift" id="search-input">
-                    </div>
+                <!-- Sorting -->
+                <div class="d-flex align-items-center gap-2">
+                    <label class="form-label mb-0 text-nowrap fw-medium">Sort by:</label>
+                    <select class="form-select form-select-sm" id="sort-column" style="min-width: 160px;">
+                        <option value="">-- Column --</option>
+                        <option value="VVENDORNO">Vendor ID</option>
+                        <option value="VVENDORNAME">Vendor Name</option>
+                        <option value="DWANTEDRECEIPTDATE">Wanted Receipt Date</option>
+                        <option value="VTIME">Time</option>
+                        <option value="VPARTNO">Part Number</option>
+                        <option value="VPARTDESCRIPTION">Part Description</option>
+                        <option value="IQUANTITY">QTY DR</option>
+                        <option value="IQUANTITYCONFIRMATION">QTY SJ</option>
+                        <option value="IQUANTITYACTUAL">QTY ACT</option>
+                        <option value="VSTATUS">Status</option>
+                        <option value="VPONO">PO Number</option>
+                        <option value="VDAILYREQNO">DR Number</option>
+                        <option value="VDELIVERYNOTENO">SJ Number</option>
+                        <option value="VPRODUCTFAMILY">Prod Family</option>
+                        <option value="DMODI">Actual Receipt Date</option>
+                    </select>
+                    <select class="form-select form-select-sm" id="sort-direction" style="min-width: 130px;">
+                        <option value="asc">Ascending</option>
+                        <option value="desc">Descending</option>
+                    </select>
                 </div>
             </div>
 
-            {{ $dataTable->table(['class' => 'table'], true) }}
+            <!-- Entries & Search -->
+            <div class="d-flex align-items-center gap-3 flex-column flex-md-row w-50 w-xl-auto justify-content-end">
+                <!-- Entries -->
+                <div class="d-flex align-items-center gap-2">
+                    <label class="form-label mb-0 text-nowrap">Show</label>
+                    <select class="form-select form-select-sm" id="entries" style="width: 80px;">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="-1">All</option>
+                    </select>
+                </div>
+                
+                <!-- Search Box -->
+                <div class="input-group input-group-sm" style="min-width: 200px;">
+                    <span class="input-group-text border-end-0 bg-transparent">
+                        <i class="ti tabler-search"></i>
+                    </span>
+                    <input type="text" class="form-control border-start-0" placeholder="Search..." id="search-input">
+                </div>
+            </div>
+
         </div>
+
+        {{ $dataTable->table(['class' => 'table'], true) }}
     </div>
+</div>
 @endsection
 
 @section('page-script')

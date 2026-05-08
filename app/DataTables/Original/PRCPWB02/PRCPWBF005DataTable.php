@@ -26,15 +26,26 @@ class PRCPWBF005DataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addIndexColumn()
+            ->addColumn('checkbox', function ($row) {
+                return '
+                    <div class="d-flex gap-2 align-items-center">
+                        <input type="checkbox" class="form-check-input" name="selected[]" value="' . $row->IID . '">
+                    </div>
+                ';
+            })
+            ->addColumn('action', fn($data) => $this->getActionButton($data))
             ->editColumn('BAL', function ($data) {
                 return $data->BAL ?? 0;
             })
             ->editColumn('DWANTEDRECEIPTDATE', function ($data) {
-                return Carbon::parse($data->DWANTEDRECEIPTDATE)->format('d M Y H:i');
+                return $data->DWANTEDRECEIPTDATE
+                    ? Carbon::parse($data->DWANTEDRECEIPTDATE)->format('d M Y H:i')
+                    : null;
             })
             ->editColumn('VTIME', function ($data) {
-                return Carbon::parse($data->VTIME)->format('H:i');
+                return $data->VTIME
+                    ? Carbon::parse($data->VTIME)->format('H:i')
+                    : null;
             })
             ->editColumn('DCREA', function ($data) {
                 return Carbon::parse($data->DCREA)->format('d M Y H:i');
@@ -46,6 +57,7 @@ class PRCPWBF005DataTable extends DataTable
                 return '';
             })
             ->setRowId('IID')
+            ->rawColumns(['checkbox', 'action'])
 
             ->filterColumn('DWANTEDRECEIPTDATE', function ($query, $keyword) {
                 $this->applyDateRangeFilter($query, 'DWANTEDRECEIPTDATE', $keyword);
@@ -65,6 +77,16 @@ class PRCPWBF005DataTable extends DataTable
                 if (! empty($keyword)) {
                     $query->whereAny(['PRCPWB_TRHDAILYREQUESTS.VVENDORNO', 'VVENDORNAME', 'PRCPWB_TRHDAILYREQUESTS.VPARTNO', 'PRCPWB_TRHDAILYREQUESTS.VPARTDESCRIPTION'], 'ILIKE', "%{$keyword}%");
                 }
+            })
+
+            ->orderColumn('DWANTEDRECEIPTDATE', function ($query, $order) {
+                $query->orderBy('DWANTEDRECEIPTDATE', $order);
+            })
+            ->orderColumn('VTIME', function ($query, $order) {
+                $query->orderBy('VTIME', $order);
+            })
+            ->orderColumn('DMODI', function ($query, $order) {
+                $query->orderBy('DMODI', $order);
             });
     }
 
@@ -116,6 +138,7 @@ class PRCPWBF005DataTable extends DataTable
                         'extend' => 'excel',
                         'className' => 'd-none',
                         'filename' => $this->filename(),
+                        'title' => 'PRCPWB - Transaction Daily Request | IDBM - PO Web',
                         'exportOptions' => [
                             'columns' => ':visible:not(:first-child):not(:last-child)',
                         ],
@@ -132,17 +155,17 @@ class PRCPWBF005DataTable extends DataTable
                     "<'d-flex align-items-center justify-content-center justify-content-lg-between flex-wrap gap-2 text-center px-6 mt-6'ip>",
                 'drawCallback' => '
                     function() {
-                        $("#select-all-service").off("click").on("click", function(){
+                        $("#select-all").off("click").on("click", function(){
                             var checked = this.checked;
-                            $("input[name=\'selected-service[]\']").prop("checked", checked).trigger("change");
+                            $("input[name=\'selected[]\']").prop("checked", checked).trigger("change");
                         });
 
-                        $("input[name=\'selected-service[]\']").off("change").on("change", function(){
-                            var anyChecked = $("input[name=\'selected-service[]\']:checked").length > 0;
+                        $("input[name=\'selected[]\']").off("change").on("change", function(){
+                            var anyChecked = $("input[name=\'selected[]\']:checked").length > 0;
                             $("#btn-delete-selected").toggleClass("d-none", !anyChecked);
 
-                            var allChecked = $("input[name=\'selected-service[]\']").length === $("input[name=\'selected-service[]\']:checked").length;
-                            $("#select-all-service").prop("checked", allChecked);
+                            var allChecked = $("input[name=\'selected[]\']").length === $("input[name=\'selected[]\']:checked").length;
+                            $("#select-all").prop("checked", allChecked);
                         });
                     }
                 ',
@@ -155,7 +178,14 @@ class PRCPWBF005DataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('DT_RowIndex')->title('No')->searchable(false)->orderable(false),
+            Column::computed('checkbox')
+                ->title('<input type="checkbox" class="form-check-input" id="select-all">')
+                ->exportable(false)
+                ->printable(false)
+                ->orderable(false)
+                ->searchable(false)
+                ->width(30)
+                ->addClass('text-center'),
             Column::make('VVENDORNO')->title('Vendor ID'),
             Column::make('VVENDORNAME')->title('Vendor Name'),
             Column::make('DWANTEDRECEIPTDATE')->title('Wanted Receipt Date'),
@@ -171,7 +201,7 @@ class PRCPWBF005DataTable extends DataTable
             Column::make('VPONO')->title('PO Number'),
             Column::make('VDAILYREQNO')->title('DR Number'),
             Column::make('VDELIVERYNOTENO')->title('SJ Number'),
-            Column::make('VPRODUCTFAMILY')->title('PROD FAMILY'),
+            Column::make('VPRODUCTFAMILY')->title('Prod Family'),
             Column::make('DMODI')->title('Actual Receipt Date'),
         ];
     }
@@ -182,5 +212,19 @@ class PRCPWBF005DataTable extends DataTable
     protected function filename(): string
     {
         return 'PRCPWBF005_' . date('YmdHis');
+    }
+
+    private function getActionButton($data): string
+    {
+        $buttons = [
+            [
+                'action' => 'delete',
+                'service' => 'PRCPWBF005-Delete',
+                'icon' => 'trash',
+                'class' => 'delete-menu',
+            ],
+        ];
+
+        return $this->actionButtons($data, $buttons);
     }
 }

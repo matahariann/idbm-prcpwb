@@ -45,7 +45,7 @@ class PRCPWBF001DataTable extends DataTable
             ->editColumn('DMODI', function ($data) {
                 return $data->DMODI
                     ? Carbon::parse($data->DMODI)->format('d M Y H:i')
-                    : null; // atau '-'
+                    : null;
             })
             ->rawColumns(['checkbox', 'action'])
             ->setRowId('IID');

@@ -21,7 +21,29 @@
 
 <div class="card">
         <div class="card-datatable">
-            <div class="d-flex justify-content-end align-items-center my-5 flex-column flex-xl-row px-6">
+            <div class="d-flex justify-content-between align-items-center my-5 flex-column flex-xl-row px-6">
+                <div class="d-flex align-items-center gap-2 justify-content-center flex-column flex-lg-row mt-2 mt-xxl-0">
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-primary" id="btn-sync">
+                            <i class="icon-base ti tabler-refresh"></i>
+                            <span>Sync</span>
+                        </button>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-primary disabled d-flex align-items-center gap-2 py-2 px-3"
+                        id="btn-eksport">
+                            <i class="icon-base ti tabler-file-type-xls"></i> Eksport
+                        </button>
+                    </div>
+                    <div class="d-flex gap-2">
+                        @serve('PRCPWBF002-Update')
+                        <button type="button" class="btn btn-primary disabled" id="btn-delete-selected">
+                            <i class="icon-base ti tabler-pencil"></i>
+                            <span>Edit</span>
+                        </button>
+                        @endserve
+                    </div>
+                </div>
                 <div class="d-flex gap-2 align-items-center flex-column flex-lg-row mt-2 mt-xxl-0">
                     <div class="d-flex align-items-center gap-1 justify-content-center">
                         <select class="form-select form-select-sm mx-2" id="entries"

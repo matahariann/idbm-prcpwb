@@ -32,10 +32,14 @@ class PRCPWBF004DataTable extends DataTable
                 return '<a href="' . $url . '" class="text-primary text-decoration-underline">' . $row->VORDERNO . '</a>';
             })
             ->editColumn('DRELEASEDATE', function ($data) {
-                return Carbon::parse($data->DRELEASEDATE)->format('d M Y H:i');
+                return $data->DRELEASEDATE
+                    ? Carbon::parse($data->DRELEASEDATE)->format('d M Y H:i')
+                    : null;
             })
             ->editColumn('DCONFIRMDATE', function ($data) {
-                return Carbon::parse($data->DCONFIRMDATE)->format('d M Y H:i');
+                return $data->DCONFIRMDATE
+                    ? Carbon::parse($data->DCONFIRMDATE)->format('d M Y H:i')
+                    : null;
             })
             ->editColumn('DCREA', function ($data) {
                 return Carbon::parse($data->DCREA)->format('d M Y H:i');
@@ -66,6 +70,13 @@ class PRCPWBF004DataTable extends DataTable
                 if (! empty($keyword)) {
                     $query->whereAny(['PRCPWB_TRHPO.VORDERNO', 'PRCPWB_TRHPO.VVENDORNO', 'VVENDORNAME'], 'ILIKE', "%{$keyword}%");
                 }
+            })
+
+            ->orderColumn('DRELEASEDATE', function ($query, $order) {
+                $query->orderBy('DRELEASEDATE', $order);
+            })
+            ->orderColumn('DCONFIRMDATE', function ($query, $order) {
+                $query->orderBy('DCONFIRMDATE', $order);
             });
     }
 
