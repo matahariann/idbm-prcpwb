@@ -95,6 +95,7 @@ class PRCPWBF002DataTable extends DataTable
                         'extend' => 'excel',
                         'className' => 'd-none',
                         'filename' => $this->filename(),
+                        'title' => 'PRCPWB - Master Data Vendor | IDBM - PO Web',
                         'exportOptions' => [
                             'columns' => ':visible:not(:first-child):not(:last-child)',
                         ],
@@ -109,37 +110,7 @@ class PRCPWBF002DataTable extends DataTable
                 'dom' => 'r' .
                     "<'table-responsive border-top'tr>" .
                     "<'d-flex align-items-center justify-content-center justify-content-lg-between flex-wrap gap-2 text-center px-6 mt-6'ip>",
-                'drawCallback' => '
-                    function() {
-                        $("#select-all").off("click").on("click", function(){
-                            var checked = this.checked;
-                            $("input[name=\'selected[]\']").prop("checked", checked).trigger("change");
-                        });
-
-                        $("input[name=\'selected[]\']").off("change").on("change", function(){
-                            var checkedCount = $("input[name=\'selected[]\']:checked").length;
-
-                            // Jika tepat 1 data dipilih, enable kedua tombol
-                            if (checkedCount === 1) {
-                                $("#btn-delete-selected").removeClass("disabled");
-                                $("#btn-eksport").removeClass("disabled");
-                            }
-                            // Jika tidak ada yang dipilih, disable kedua tombol
-                            else if (checkedCount === 0) {
-                                $("#btn-delete-selected").addClass("disabled");
-                                $("#btn-eksport").addClass("disabled");
-                            }
-                            // Jika lebih dari 1 dipilih, disable btn-delete-selected tapi enable btn-eksport
-                            else {
-                                $("#btn-delete-selected").addClass("disabled");
-                                $("#btn-eksport").removeClass("disabled");
-                            }
-
-                            var allChecked = $("input[name=\'selected[]\']").length === checkedCount;
-                            $("#select-all").prop("checked", allChecked);
-                        });
-                    }
-                ',
+                'drawCallback' => 'function() {}',
             ]);
     }
 
@@ -157,6 +128,7 @@ class PRCPWBF002DataTable extends DataTable
                 ->searchable(false)
                 ->width(30)
                 ->addClass('text-center'),
+            Column::make('VVENDORNO')->title('Vendor ID'),
             Column::make('VVENDORNAME')->title('Vendor Name'),
             Column::make('VCONTACT')->title('Contact'),
             Column::make('VADDRESS')->title('Address'),            

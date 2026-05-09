@@ -4,6 +4,7 @@ namespace App\Http\Requests\PRCPWB\PRCPWB01;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class ConfigurationRequest extends FormRequest
 {
@@ -25,8 +26,17 @@ class ConfigurationRequest extends FormRequest
         $rules = [
             'variable' => [
                 'required',
-                Rule::unique('PRCPWB_MSHCONFIGURATIONS', 'VVARIABLE')
-                    ->whereNull('DDELETE')
+                function ($attribute, $value, $fail) {
+                    $exists = DB::connection('prcpwb')
+                        ->table('PRCPWB_MSHCONFIGURATIONS')
+                        ->where('VVARIABLE', $value)
+                        ->whereNull('DDELETE')
+                        ->exists();
+
+                    if ($exists) {
+                        $fail('The variable has already been taken.');
+                    }
+                },
             ],
             'value' => 'required',
         ];
@@ -34,7 +44,21 @@ class ConfigurationRequest extends FormRequest
         if ($this->method() === 'PUT' || $this->method() === 'PATCH') {
             $configurationId = $this->route('configuration')->IID;
 
-            $rules['variable'] = ['required', Rule::unique('PRCPWB_MSHCONFIGURATIONS', 'VVARIABLE')->whereNull('DDELETE')->ignore($configurationId, 'IID')];
+            $rules['variable'] = [
+                'required',
+                function ($attribute, $value, $fail) use ($configurationId) {  // ← pastikan ada 'use ($configurationId)'
+                    $exists = DB::connection('prcpwb')
+                        ->table('PRCPWB_MSHCONFIGURATIONS')
+                        ->where('VVARIABLE', $value)
+                        ->whereNull('DDELETE')
+                        ->where('IID', '!=', $configurationId)
+                        ->exists();
+
+                    if ($exists) {
+                        $fail('The variable has already been taken.');
+                    }
+                },
+            ];
         }
 
         return $rules;

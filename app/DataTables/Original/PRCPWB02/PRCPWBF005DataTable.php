@@ -33,13 +33,12 @@ class PRCPWBF005DataTable extends DataTable
                     </div>
                 ';
             })
-            ->addColumn('action', fn($data) => $this->getActionButton($data))
             ->editColumn('BAL', function ($data) {
                 return $data->BAL ?? 0;
             })
             ->editColumn('DWANTEDRECEIPTDATE', function ($data) {
                 return $data->DWANTEDRECEIPTDATE
-                    ? Carbon::parse($data->DWANTEDRECEIPTDATE)->format('d M Y H:i')
+                    ? Carbon::parse($data->DWANTEDRECEIPTDATE)->format('d M Y')
                     : null;
             })
             ->editColumn('VTIME', function ($data) {
@@ -52,12 +51,12 @@ class PRCPWBF005DataTable extends DataTable
             })
             ->editColumn('DMODI', function ($data) {
                 if ($data->VSTATUS->value === 'Received') {
-                    return $data->DMODI ? Carbon::parse($data->DMODI)->format('d/m/Y H:i:s') : '-';
+                    return $data->DMODI ? Carbon::parse($data->DMODI)->format('d/m/Y H:i:s') : null;
                 }
                 return '';
             })
             ->setRowId('IID')
-            ->rawColumns(['checkbox', 'action'])
+            ->rawColumns(['checkbox'])
 
             ->filterColumn('DWANTEDRECEIPTDATE', function ($query, $keyword) {
                 $this->applyDateRangeFilter($query, 'DWANTEDRECEIPTDATE', $keyword);
@@ -153,22 +152,7 @@ class PRCPWBF005DataTable extends DataTable
                 'dom' => 'r' .
                     "<'table-responsive border-top'tr>" .
                     "<'d-flex align-items-center justify-content-center justify-content-lg-between flex-wrap gap-2 text-center px-6 mt-6'ip>",
-                'drawCallback' => '
-                    function() {
-                        $("#select-all").off("click").on("click", function(){
-                            var checked = this.checked;
-                            $("input[name=\'selected[]\']").prop("checked", checked).trigger("change");
-                        });
-
-                        $("input[name=\'selected[]\']").off("change").on("change", function(){
-                            var anyChecked = $("input[name=\'selected[]\']:checked").length > 0;
-                            $("#btn-delete-selected").toggleClass("d-none", !anyChecked);
-
-                            var allChecked = $("input[name=\'selected[]\']").length === $("input[name=\'selected[]\']:checked").length;
-                            $("#select-all").prop("checked", allChecked);
-                        });
-                    }
-                ',
+                'drawCallback' => 'function() {}',
             ]);
     }
 
@@ -212,19 +196,5 @@ class PRCPWBF005DataTable extends DataTable
     protected function filename(): string
     {
         return 'PRCPWBF005_' . date('YmdHis');
-    }
-
-    private function getActionButton($data): string
-    {
-        $buttons = [
-            [
-                'action' => 'delete',
-                'service' => 'PRCPWBF005-Delete',
-                'icon' => 'trash',
-                'class' => 'delete-menu',
-            ],
-        ];
-
-        return $this->actionButtons($data, $buttons);
     }
 }

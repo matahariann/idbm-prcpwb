@@ -23,6 +23,10 @@ Route::group(['prefix' => 'bd', 'middleware' => 'auth'], function () {
     // Master Vendor
     Route::group(['prefix' => 'master-vendor', 'controller' => PRCPWBF002::class], function () {
         Route::get('/', 'index');
+        Route::get('/export', 'export');
+        Route::post('/export', 'export');
+        Route::get('/{vendor}', 'show');
+        Route::put('/{vendor}', 'update');
     });
 });
 
@@ -42,11 +46,15 @@ Route::group(['prefix' => 'ts', 'middleware' => 'auth'], function () {
     // Daily Request
     Route::group(['prefix' => 'daily-request', 'controller' => PRCPWBF005::class], function () {
         Route::get('/', 'index');
+        Route::get('/export', 'export');
+        Route::post('/export', 'export');
     });
 
     // Stock
     Route::group(['prefix' => 'data-stock', 'controller' => PRCPWBF006::class], function () {
         Route::get('/', 'index');
+        Route::get('/export', 'export');
+        Route::post('/export', 'export');
     });
 
     // Generate QR

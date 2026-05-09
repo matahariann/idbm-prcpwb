@@ -27,7 +27,13 @@ class PRCPWBF006DataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addIndexColumn()
+            ->addColumn('checkbox', function ($row) {
+                return '
+                    <div class="d-flex gap-2 align-items-center">
+                        <input type="checkbox" class="form-check-input" name="selected[]" value="' . $row->IID . '">
+                    </div>
+                ';
+            })
             ->editColumn('upload_date', function($row) {
                 return \Carbon\Carbon::parse($row->upload_date)->format('Y-m-d');
             })
@@ -48,7 +54,7 @@ class PRCPWBF006DataTable extends DataTable
                         . $row->judgment . 
                        '</div>';
             })
-            ->rawColumns(['judgment']);
+            ->rawColumns(['checkbox', 'judgment']);
     }
 
     /**
@@ -101,17 +107,17 @@ class PRCPWBF006DataTable extends DataTable
                     "<'d-flex align-items-center justify-content-center justify-content-lg-between flex-wrap gap-2 text-center px-6 mt-6'ip>",
                 'drawCallback' => '
                     function() {
-                        $("#select-all-service").off("click").on("click", function(){
+                        $("#select-all").off("click").on("click", function(){
                             var checked = this.checked;
-                            $("input[name=\'selected-service[]\']").prop("checked", checked).trigger("change");
+                            $("input[name=\'selected[]\']").prop("checked", checked).trigger("change");
                         });
 
-                        $("input[name=\'selected-service[]\']").off("change").on("change", function(){
-                            var anyChecked = $("input[name=\'selected-service[]\']:checked").length > 0;
+                        $("input[name=\'selected[]\']").off("change").on("change", function(){
+                            var anyChecked = $("input[name=\'selected[]\']:checked").length > 0;
                             $("#btn-delete-selected").toggleClass("d-none", !anyChecked);
 
-                            var allChecked = $("input[name=\'selected-service[]\']").length === $("input[name=\'selected-service[]\']:checked").length;
-                            $("#select-all-service").prop("checked", allChecked);
+                            var allChecked = $("input[name=\'selected[]\']").length === $("input[name=\'selected[]\']:checked").length;
+                            $("#select-all").prop("checked", allChecked);
                         });
                     }
                 ',
@@ -124,6 +130,14 @@ class PRCPWBF006DataTable extends DataTable
     public function getColumns(): array
     {
         return [
+            Column::computed('checkbox')
+                ->title('<input type="checkbox" class="form-check-input" id="select-all">')
+                ->exportable(false)
+                ->printable(false)
+                ->orderable(false)
+                ->searchable(false)
+                ->width(30)
+                ->addClass('text-center'),
             Column::make('upload_date')->title('Date')->width(90),
             Column::make('time')->title('Time')->width(75)->searchable(false), // Kolom tambahan buatan
             Column::make('vendor_no')->title('Vendor ID')->width(70),

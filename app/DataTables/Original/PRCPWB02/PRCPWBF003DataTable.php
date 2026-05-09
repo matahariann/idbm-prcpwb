@@ -158,22 +158,6 @@ class PRCPWBF003DataTable extends DataTable
                 'dom' => 'r' .
                     "<'table-responsive border-top'tr>" .
                     "<'d-flex align-items-center justify-content-center justify-content-lg-between flex-wrap gap-2 text-center px-6 mt-6'ip>",
-                'drawCallback' => '
-                    function() {
-                        $("#select-all-service").off("click").on("click", function(){
-                            var checked = this.checked;
-                            $("input[name=\'selected-service[]\']").prop("checked", checked).trigger("change");
-                        });
-
-                        $("input[name=\'selected-service[]\']").off("change").on("change", function(){
-                            var anyChecked = $("input[name=\'selected-service[]\']:checked").length > 0;
-                            $("#btn-delete-selected").toggleClass("d-none", !anyChecked);
-
-                            var allChecked = $("input[name=\'selected-service[]\']").length === $("input[name=\'selected-service[]\']:checked").length;
-                            $("#select-all-service").prop("checked", allChecked);
-                        });
-                    }
-                ',
             ]);
     }
 

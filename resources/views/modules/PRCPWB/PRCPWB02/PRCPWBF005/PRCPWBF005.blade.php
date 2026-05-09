@@ -27,9 +27,9 @@
             <div class="d-flex align-items-center gap-3 flex-column flex-md-row w-50 w-xl-auto justify-content-end">
                 <!-- Export-->
                 <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-primary d-flex align-items-center gap-2 py-2 px-3"
-                            id="export-excel">
-                        <i class="icon-base ti tabler-file-type-xls"></i> Export
+                    <button type="button" class="btn btn-primary disabled d-flex align-items-center gap-2 py-2 px-3"
+                        id="export-excel">
+                            <i class="icon-base ti tabler-file-type-xls"></i> Eksport
                     </button>
                 </div>
                 <!-- Sorting -->

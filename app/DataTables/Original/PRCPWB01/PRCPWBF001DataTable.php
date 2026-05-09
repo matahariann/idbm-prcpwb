@@ -23,13 +23,7 @@ class PRCPWBF001DataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('checkbox', function ($row) {
-                return '
-                    <div class="d-flex gap-2 align-items-center">
-                        <input type="checkbox" class="form-check-input" name="selected[]" value="' . $row->id . '">
-                    </div>
-                ';
-            })
+            ->addIndexColumn() // Untuk kolom 'No'
             ->editColumn('VVALUE', function ($data) {
                 $confLength = Config::where('VVARIABLE', 'max_char_value')->first();
                 $value = $data->VVALUE;
@@ -47,7 +41,7 @@ class PRCPWBF001DataTable extends DataTable
                     ? Carbon::parse($data->DMODI)->format('d M Y H:i')
                     : null;
             })
-            ->rawColumns(['checkbox', 'action'])
+            ->rawColumns(['action'])
             ->setRowId('IID');
     }
 
@@ -98,22 +92,6 @@ class PRCPWBF001DataTable extends DataTable
                 'dom' => 'r' .
                     "<'table-responsive border-top'tr>" .
                     "<'d-flex align-items-center justify-content-center justify-content-lg-between flex-wrap gap-2 text-center px-6 mt-6'ip>",
-                'drawCallback' => '
-                    function() {
-                        $("#select-all-service").off("click").on("click", function(){
-                            var checked = this.checked;
-                            $("input[name=\'selected-service[]\']").prop("checked", checked).trigger("change");
-                        });
-
-                        $("input[name=\'selected-service[]\']").off("change").on("change", function(){
-                            var anyChecked = $("input[name=\'selected-service[]\']:checked").length > 0;
-                            $("#btn-delete-selected-service").toggleClass("d-none", !anyChecked);
-
-                            var allChecked = $("input[name=\'selected-service[]\']").length === $("input[name=\'selected-service[]\']:checked").length;
-                            $("#select-all-service").prop("checked", allChecked);
-                        });
-                    }
-                ',
             ]);
     }
 
@@ -123,14 +101,7 @@ class PRCPWBF001DataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::computed('checkbox')
-                ->title('<input type="checkbox" class="form-check-input" id="select-all">')
-                ->exportable(false)
-                ->printable(false)
-                ->orderable(false)
-                ->searchable(false)
-                ->width(30)
-                ->addClass('text-center'),
+            Column::make('DT_RowIndex')->title('No')->searchable(false)->orderable(false)->width(30),
             Column::make('VVARIABLE')->title('Variable')->addClass('text-nowrap'),
             Column::make('VVALUE')->title('Value'),
             Column::make('VCREA')->title('Created By')->addClass('text-nowrap'),

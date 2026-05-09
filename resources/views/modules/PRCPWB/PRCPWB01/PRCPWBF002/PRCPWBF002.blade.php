@@ -31,7 +31,7 @@
                     </div>
                     <div class="d-flex gap-2">
                         <button type="button" class="btn btn-primary disabled d-flex align-items-center gap-2 py-2 px-3"
-                        id="btn-eksport">
+                        id="export-excel">
                             <i class="icon-base ti tabler-file-type-xls"></i> Eksport
                         </button>
                     </div>
@@ -68,6 +68,8 @@
             {{ $dataTable->table(['class' => 'table'], true) }}
         </div>
     </div>
+
+@include('modules.PRCPWB.PRCPWB01.PRCPWBF002.partials._vendor-form')
 @endsection
 
 @section('page-script')
